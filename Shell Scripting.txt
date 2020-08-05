@@ -1,0 +1,1260 @@
+
+
+
+A unix shell program/shell script is interpreted user commands which are either directly entered by the user or which can be written from a file called shell script or shell program. 
+
+
+Shell scripting is interpreted and not compiled. When shell scripts are written it is interpreted by OS and no need to compile to shell script to execute it.
+
+
+There are different type of shell, we are learning bash shell.
+
+
+Below command gives you which sells will be supported by your OS
+
+cat /etc/shells
+
+
+
+
+sh   --> bourne shell (original shell used in unix OS or unix environments)
+
+bash --> bourne again shell was re-invented (improved version of sh) 
+
+
+
+
+
+
+ksh  --> Korn shell
+
+csh  --> C Shell
+
+tcsh --> improved version of sh
+
+
+
+which bash will give you where bash is present.
+
+
+It is not necessary to use .sh extension for shell script files. But when we open the files this .sh will tell the editor that is a shell script file and editor will give the beautified version of that shell script.
+
+
+
+#! "location of shell"
+
+
+Eg: #! /bin/bash --> interpreter knows this is a bash shell script
+    #! /bin/sh   --> interpreter knows this is a sh shell script
+
+
+comments escape character - #
+
+Eg: #This is a code
+
+Comments will be skipped by the compiler, these are just for information purpose.
+
+
+
+Variables:
+1. System variables 
+	These are created and maintained by Unix/Linux OS. Theses are pre-defined by OS. The standard convention is they are defined in capital cases.
+
+2. User defined variables
+	These type of variables are created and maintained by the user and generally defined in lower cases(and no thumb rule to create these in lower case, even we can write in upper case as well)
+
+Note:
+Use $ before variables to get the content
+
+
+System variables 
+
+Eg: BASH, BASH_VERSION, PWD, HOME
+
+
+     Eg:echo $BASH
+	echo $BASH_VERSION
+	echo $PWD
+	echo $HOME
+
+
+User defined variables
+
+    Eg: name=Surya	#Avoid spaces before & after =
+	echo $name
+	echo "My name is $name"  (or)
+	echo "My name is "$name  (or)
+	echo My name is $name
+
+
+Note:
+Variable name should not start with numbers. Try giving 10val as variable name.
+
+
+Read User input:
+
+Read command is used to get inputs from keyboard/terminal. This command takes input from keyboard and assigns it to variable.
+
+
+    Eg: echo "Enter your name: "
+	read name
+
+	echo "Entered name: $name"
+
+
+
+If we want to enter values on the same line of console use p flag (read -p)
+
+    Eg: read -p "Enter your name: " name
+
+	echo "Entered name: $name"
+
+
+
+
+Input multiple variables:
+
+    Eg: echo "Enter the name, mobno, state: "
+	read name mobno state
+
+	echo "Enter values are: $name $mobno $state"
+	echo "Enter values are: $name, $mobno, $state"
+
+
+
+
+
+
+Silent Inputs:
+
+Sometimes we want to make the inputs as silent like password.
+Use s flag
+
+
+    Eg: read -p "Enter name: " name
+	read -sp "Enter password: " pass #silents the password - doesn't show anything even dots
+	echo
+	echo "Entered name is $name, password is $pass"
+
+
+
+Note:	
+To print a line use only echo with out any parameters/string.
+Never use read -ps(silent won't works) use only -sp
+When you use 2 echo in same line the first echo acts as print and second echo will print on console. (Eg: echo $name, echo $pass).
+
+
+
+Array:
+
+To take multiple inputs from the keyboard use a flag.
+To print the elements in an array use the index.
+
+    Eg: echo "Enter your name: "
+	read -a names
+
+	echo "Names: ${names[0]} ${names[1]}"
+
+
+Note:
+a flag won't work when combined with s flag. If we try we will get error saying not a valid identifier.
+
+    Eg: read -as "Enter names: " names.  (Or)
+	read -sa "Enter names: " names
+
+   o/p: ./array.sh: line 3: read: `Enter names: ': not a valid identifier
+
+
+
+Array: (without -a flag)
+
+os=( 'ubuntu' 'windows' 'Kali' )
+
+os[4]='mac' --> adds mac as 4th element to array os
+os[2]='mac' --> replaces 2nd element with mac 
+
+unset os[3] --> delete/removes 3rd element
+
+
+echo "${os[@]}" --> prints entire array
+echo "${os[2]}"	--> prints 2nd element
+
+echo "${!os[@]}" --> prints array indexes
+echo "${#os[@]}" --> prints array size
+
+
+
+
+bash permits array operations on variables also even the variables are explicitly declared as arrays.
+
+    Eg: string=saKLXKSANX
+		
+	echo "${string[@]}"
+	echo "${string[1]}"
+	echo "${string[2]}"
+	echo "${#string[@]}"
+	
+
+
+Example: (imp)
+
+#! /bin/bash
+  
+array=( 'element1' 'element2' 'element3' )
+
+echo "${array[@]}"
+
+array[4]=$1	#Note -->  don't write as array[4]='$1' because it will take $1 as argument
+
+read -p "Enter a value to add:" array[5]
+
+echo "${array[@]}"
+
+echo "do you wanna delete an element??"
+read -p "enter y if yes and n if no" del
+
+#del="y"
+
+#if [ $del = "y" ] --> if you take i/p from console and passing it to if statement then use "$variable" compulsory. if variable is declared inside script the "" is not mandatory 
+#	(or)
+#if [ "$del" = "y" ]
+
+if [ "$del" = "y" ]
+then
+   read -p "enter the index value" index
+   unset array["$index"]
+fi
+
+echo "${array[@]}"
+
+
+
+
+
+
+
+
+	
+
+Built-in variable (REPLY):
+
+Suppose we did not declare a variable and tried to provide a value, the value will be stored in built-in variable.
+
+    Eg: echo "Enter your name: "
+	read
+	
+	echo "Entered value is: "$REPLY
+
+
+
+
+
+Passing Arguments, $:
+
+    Eg: echo $1 $2 $3
+	echo $0 $1 $2 $3  
+	
+	echo "values are :"$0 $1 $2 ...
+	where $0 --> file name     will be saved
+	      $1 --> 1st argument  will be saved	
+	      $2 --> 2nd argument  will be saved
+	      $3 --> 3rd argument  will be saved
+
+    
+    Eg: echo $1 $2 '> echo $1 $2'
+
+
+
+Passing arguments to an array all at once, ("$@"):
+
+    Eg: ArrayName=("$@")
+
+	echo ${ArrayName[0]} ${ArrayName[1]} ...
+
+
+Printing all at once:
+
+    Eg: echo $@
+
+Print no. of arguments passed ($#):
+
+    Eg: echo $#
+
+
+
+
+
+
+If statement:
+
+    Syntax: 
+	if [ condition ]
+	then
+	  statement
+	fi
+
+
+
+If-else statement:
+
+    Syntax: 
+	if [ condition ]
+	then
+	  statement
+	else
+	  statement
+	fi
+
+
+
+Swap the below comparison operators in the above syntax
+
+Integer comparison
+ =  -->  -eq
+!=  -->  -ne
+ >  -->  -gt
+>=  -->  -ge
+ <  -->  -lt
+<=  -->  -le
+ 
+If we want to use operators(only for angles) directly swap [ ] with (( ))
+
+String comparison
+
+== or = --> equal
+!=	--> not equal
+<	--> greater than ASCII alphabetical order
+> 	--> less than ASCII alphabetical order
+-z 	--> null
+
+Note: 
+If we want to use operators(only for angles) use double square brackets [[ ]]
+
+Example1:
+
+#! /bin/bash
+
+count=10
+string=Surya
+
+
+if (( $count <= 10 ))
+then
+	echo "True"
+fi
+
+if [ $count -le 10 ]
+then
+	echo "True2"
+fi
+
+
+if [ $string = "Surya" ]
+then
+	echo "True3"
+fi
+
+if [[ $string < "Surya" ]]
+then
+	echo "True"
+fi
+
+
+
+Example 2:
+
+#! /bin/bash
+
+string=Surya
+
+if [ $string = "Surya" ]
+then
+    echo "True 1"
+else
+    echo "False 1"
+fi
+
+if [[ $string < "Surya" ]]
+then
+    echo "True 2"
+else
+    echo "False 2"
+
+fi
+
+
+
+
+
+
+Multiple If-else statement:
+
+
+    Syntax:
+	
+	if [ condition ]
+	then
+	  statement
+	
+	elif [ condition ]
+	then
+	  statement
+	
+	else		
+	  statement
+	fi
+	
+
+
+Example:
+
+#! /bin/bash
+
+
+name=Surya
+
+
+if [[ $name == Sur ]]
+then
+	echo "True - if"
+
+elif [[ $name == Surya ]]
+then
+	echo "True - elif"
+
+else
+	echo "False"
+fi
+
+
+
+
+
+
+File Test Operators:
+
+    Syntax: if [ -flag $variable ]
+
+Most of the times we write shell scripting is we are dealing with the files like if we want to check file exist or not?, if the file is a regular file or it's a block or special file or character special file or many other options if we want to check we use these file test operators.
+
+
+Note:
+\c is used to place the cursor on the same line
+-e flag is used to enable the interpretation of \c if used in echo
+
+	echo -e "Enter name of the file: \c"
+	read file_name
+		(or)
+	read -p "Enter file name: " file_name
+
+
+
+File Test Operation notations:
+
+-e --> checks if file exist/not
+-f --> checks if file exist & regular file/not
+-d --> checks if directory exist/not
+-b --> checks if blog special file
+-c --> checks if character special file
+-s --> check if file is empty/not (empty --> goes to else statement)
+-r --> checks if file has read permissions
+-w --> checks if file has read write permissions
+-x --> checks if file has read execute permissions
+
+    Eg:
+	#! /bin/bash
+
+	echo -e "Enter name of the file: \c"
+	read file_name
+
+	if [ -e $file_name ]
+	then
+	    echo "File exists"
+	else
+	    echo "File doen't exists"
+	fi
+
+
+Q. Write a script to take input from keyboard and test if the file exists, type, read permissions, regular file or not?
+A.
+
+	#! /bin/bash
+
+	read -p "Enter the file name: " file_name
+
+	if [ -e $file_name ]
+	then
+	    echo "File exists"
+	    
+	    if [ -f $file_name ]
+	    then
+	        echo "Regular file"
+	    else
+	        echo "Non-regular file"
+	    fi
+
+	    if [ -r $file_name ]
+	    then
+	        echo "Read permissions exists"
+	    else 
+	        echo "No read permissions"
+	    fi
+
+	else
+	    echo "No file found"
+	fi
+
+
+
+
+
+Append output:
+
+Q. Write a script to append into a file.
+A.
+
+
+read -p "Enter file name to edit: " file_name
+
+if [ -f $file_name ]
+then
+    if [ -w $file_name ]
+    then
+        echo "Enter text to append and press ctrl+d at the end"
+        cat >> $file_name
+    else
+        echo "write permission doesn't exists, do you want to give write permission to the file?"
+        echo "Use y --> yes, n --> no"
+        read permissions
+        if [ $permissions == "y" ]
+            then
+                chmod +w $file_name
+                echo "Enter text to append and press ctrl+d at the end"
+                cat >> $file_name
+        else    
+            echo "Provide write permissions to the file"
+        fi
+    fi
+
+
+else
+    echo "File not found"
+fi
+
+
+
+
+
+
+
+Arithmetic Operations:
+
+Logical AND Operator:
+
+    Syntax 1: if [ condition ] && [ condition ] 
+
+    Syntax 2: if [[ condition && condition ]]
+	    
+    Syntax 3: if [[ condition -a condition ]]
+
+-a flag can also be used --> a stands for AND
+
+
+Logical OR Operator:
+
+
+    Syntax 1: if [ condition ] || [ condition ] 
+
+    Syntax 2: if [[ condition || condition ]]
+	    
+    Syntax 3: if [[ condition -o condition ]]
+
+-o flag can also be used --> o stands for OR
+
+
+
+
+Arithmetic Operations for int:
+
+    Syntax: $(( num1 + num2 ))
+	    $(( num1 - num2 ))
+	    $(( num1 * num2 ))
+	    $(( num1 / num2 ))
+	    $(( num1 % num2 ))
+
+    Eg: num1 = 10
+	num2 = 45
+	echo $(( num1 + num2 ))
+
+	sum=$(( num1 + num2 ))
+	echo $sum
+
+Alternate way:
+
+    Syntax: $( expr $num1 + $num2 )
+	    $( expr $num1 - $num2 )
+	    $( expr $num1 \* $num2 )  
+	    $( expr $num1 / $num2 )
+	    $( expr $num1 % $num2 )
+
+    Eg: num1 = 10
+	num2 = 45
+	echo $(( num1 + num2 ))
+
+Note:
+
+echo $( expr $num1 * $num2 )
+When run we get Syntax error --> interpreter will not take * as escape so use \*
+
+
+
+
+
+
+
+
+
+Arithmetic Operations for float:
+
+By default the above two methods won't work for decimal values. We need to use bc --> basic calculator
+
+    Syntax: echo "$value1 + $value2" | bc
+	    echo "$value1 - $value2" | bc
+	    echo "$value1 * $value2" | bc
+	    echo "$value1 / $value2" | bc  #o/p --> int value
+	    echo "$value1 % $value2" | bc
+
+
+Scale:
+When we use / for float we get int as o/p to overcome this we use scale.
+
+    Syntax: echo "scale=20;$value1 / $value2" | bc	--> o/p will be float value
+
+	scale=value, value --> no. of digits after dot
+
+In the above eg scale is 20, so 20 digits will be displayed after dot
+
+
+Basic calculator:
+
+bc has much more operations than above like square root etc, check man page for more info
+
+    Eg: num=2
+	echo "scale=5;sqrt($num)" | bc -l
+	echo "scale=2;3^3" | bc -l
+
+--> sqrt & power are mathematical operations we need to add -l flag
+
+-l --> mathlib 
+
+
+
+
+
+
+Case statement:
+
+Case is alternate to multiple if-else statements.
+
+    Syntax: case expression in
+		pattern1 )
+		    statements ;;
+		pattern2 )
+		    statemnets ;;
+		...
+	    esac
+ 	
+use * for default pattern
+
+
+Eg1:
+#! /bin/bash
+
+vehicle=$1
+
+case $vehicle in
+	
+	"car" )
+	   echo "Rent of $vehicle: \$100" ;;
+	
+	"bus" )
+	   echo "Rent of $vehicle: \$120" ;;
+	
+	"bicycle" )
+	   echo "Rent of $vehicle: \$5" ;;
+	
+	* )
+	   echo "$vehicle - unknown" ;;
+
+esac
+
+
+
+Eg2: (case statement using patterns)
+#! /bin/bash
+
+read -p "Enter a value:" value
+
+case $value in
+	
+	[a-z] )
+	   echo "Entered $value: a-z" ;;
+	
+	#if uppercase won't work type "LANG=C" on terminal & press enter
+	[A-Z] )		
+	   echo "Entered $value: A-Z" ;; 
+	
+	[0-9] )
+	   echo "Entered $value: 0-9" ;;
+
+	 ? )
+	   echo "Entered $value: special character" ;;
+
+	 * )
+	   echo "$value - unknown" ;;
+
+esac
+
+
+
+
+
+
+
+
+Loops:
+
+when we want to perform any action repeatedly we use loops.
+1. while
+2. until
+3. for
+
+
+while loop:
+
+    Syntax: 
+	
+	while [ condition ] 
+	do
+	  . . .
+	  . . .
+	  . . .
+	done
+
+Just like if statement, instead of [ ] we can use (( )) but if we wanna use (( )) compulsory we should use angles(<,>) in condition
+
+
+    Eg: while [ $n -le 10 ]			while (( $n<=10 ))
+	do					do
+	  echo $n		(or)	          echo $n
+	  (( n++ ))				  (( n++ ))
+	done					done
+
+
+
+sleep:
+    
+    Syntax:
+
+	sleep time	#Note --> time will be always in sec
+
+    Eg: sleep 9		#Note --> code pauses for 9sec
+
+
+Tricks:
+Q. How to terminate shell script from execution?
+A. ctrl+c --> stops current running script
+
+Q. How to open terminal?
+A. terminal_name & --> opens terminal
+
+
+
+
+Read file contents:
+
+Below are few ways to read file contents using while 
+1. Input Redirection
+2. Read the file in single variable (using cat & pipe)
+3. Using IFS
+
+1. Input Redirection
+
+#! /bin/bash
+
+	while read x
+	do 	
+	  echo $x
+	done < filename
+
+  x --> variable which stores the content of filename
+
+2. Using cat & pipe
+
+	cat filename | while read p
+	do
+	  echo $p
+	done
+
+  x --> variable which stores the content of filename
+
+
+3. IFS (Internal Field Separator)
+
+Using the above 2 methods, sometimes it's hard to read the files. The problem is line indentation. 
+To overcome this we use IFS (Internal Field Separator) and it is used for by the shell to determine how to do word splitting. 
+
+    Eg: #! /bin/bash
+
+	while IFS=' ' read -r line
+	do
+	  echo $line
+	done < filename
+
+Some other ways of reading file contents are
+--> File descriptors
+
+
+
+
+
+until loop:
+
+	This is reverse to while. In while if condition is true then it will enter into do and will execute.
+But in until if condition is false then the loop will execute 
+
+    Syntax:
+ 
+	until [ condition ]
+	do
+	  . . .
+	  . . .
+	  . . .
+	done
+
+
+    Eg: #!/bin/bash				#!/bin/bash
+	
+	n=1					n=1
+
+	until [ $n -ge 10 ]			until (( $n>=10 ))
+	do					do
+	  echo $n		(or)	          echo $n
+	  (( n++ ))				  (( n++ ))
+	done					done
+
+
+
+
+
+for loop:
+
+There are several syntax for for loop 
+
+    Syntax 1:						Syntax 2:
+	
+	for VARIABLE in 1 2 3 4 .. N			for VARIABLE in file1 file2 ...
+	do						do
+	  . . .						  . . . on $VARIABLE
+	  . . .						  . . .
+	  . . .						  . . .
+	done						done
+
+
+
+    Syntax 3:						Syntax 4:
+
+	for OUTPUT in $(Linux/Unix Command here)	for (( EXP1 ; EXP2 ; EXP3 ))
+	do						do
+	  . . . on $OUTPUT				  . . .
+	  . . .						  . . . 
+	  . . .						  . . . 
+	done						done
+
+
+
+
+Examples:
+
+Syntax 1:
+
+#! /bin/bash
+
+for i in 0 1 2
+do
+    echo $i
+done
+
+
+
+echo "2nd notation"
+
+for i in {0..5}     # {START..END} --> works on for bash version above 3  
+do                  #to know bash version use echo #BASH_VERSION or bash --version
+  echo $i
+done
+
+
+
+echo "3rd notation"
+
+for i in {0..10..2}     # {START..END..INCREMENT} --> works on for bash version above 4  
+do
+  echo $i
+done
+
+
+
+
+Syntax 4:
+
+
+#! /bin/bash
+
+for (( i=1 ; i<=10 ; i++ ))
+do
+    echo $i
+done
+
+
+
+
+
+Syntax 2:
+
+
+
+
+
+
+Syntax 3:
+
+#! /bin/bash
+
+echo "Example 1"
+echo
+for command in ls pwd date
+do
+    echo "-------------------------- $command ---------------------------"
+    $command
+done
+
+
+
+echo "Example 2 - Real time examples"
+echo
+for every_item in *
+do 
+    if [ -d $every_item ]
+    then
+      echo $every_item
+    fi
+done
+
+
+
+echo "Example 3 - Real time examples"
+echo
+for every_item in *
+do
+    if [ -f $every_item ]
+    then
+      echo $every_item
+    fi
+done
+
+
+
+
+
+
+Select loop:
+
+Select loop gives us the list of menus and asks to select 1. This is useful where we required scripts with some menus. 
+
+    Syntax:
+
+	select varName in list
+	do
+	  . . .
+	  . . .
+	  . . .
+	done
+
+
+Eg:
+
+#! /bin/bash
+
+select i in name no address
+
+do 
+echo $i
+done
+
+
+Note:
+1. Select loop is often used with case statement.
+2. To end select loop press ctrl+c
+
+
+Eg:
+
+#! /bin/bash
+
+read -p "Enter name: " name
+read -p "Enter no.: " no
+read -p "Enter Address: " address
+
+select a in name no address
+do 
+
+  case $a in
+  name)
+    echo $name
+    echo "we can also do complex operations"	
+    ;;
+
+  no) 
+    echo $no
+    echo "we can also do complex operations"
+    ;;
+
+  address) 
+    echo $address
+    echo "we can also do complex operations"
+    ;;
+
+  *)
+    echo "Error"
+    ;;
+
+  esac
+
+done
+
+
+
+
+
+
+Break & Continue Statements:
+
+Break - use to exit the current loop or break a loop before it's normal execution.
+
+    Syntax:
+	break
+
+Eg:
+#! /bin/bash
+
+for (( i=1 ; i<=10 ; i++ )) 
+do
+  if [ i -le 5 ]
+  then
+
+    break
+
+  fi
+echo $i
+done
+
+
+
+Continue - it just skips the loop for that iteration 
+
+   Syntax:
+	continue
+
+Eg:
+#! /bin/bash
+
+for (( i=1; i<=10; i++ ))
+do
+  if [ $i -eq 3 -o $i -eq 7 ]
+  then
+
+    continue
+
+  fi
+echo $i
+done
+
+
+
+
+
+
+
+
+Functions: (same as method in Java)
+
+    Syntax 1:					Syntax 2:
+
+	function fn_name(){			    fn_name (){   
+	  . . .					      . . .
+	  . . .					      . . .
+	  . . .					      . . .
+	}					    }		
+
+
+Note:
+We can use function inside function
+
+
+Eg 1:						Eg 2:
+
+main(){	      #function declaration		function main (){      #function declaration
+
+echo "Say hi..."				na=$1
+						echo "Say hi..."
+}						echo $na
+main	      #function calling			
+						}
+						main as       #function calling by passing variable   
+
+
+
+
+
+
+Note:
+By default if we declare a variable in shell scripting, it is a global variable by default.
+
+
+Local variable:
+
+    Syntax:
+	local
+
+As by default every variable is a global variable, assume is we declare a variable with same name inside & outside of any function, and function is called at the endow the script. This will change the variable value(find below example), to overcome this we need to use local variables.
+
+
+Eg:(without localvariable)
+
+#! /bin/bash
+
+name="Shawm"
+
+
+function loc (){
+
+name=$1
+echo $name
+
+}
+
+echo $name" - Before function"
+
+loc Raj
+
+echo $name" - After function"
+
+
+
+
+
+
+So, to use local variables we have to use local keyword before variable name.
+
+
+Eg:(with using localvariable)
+
+#! /bin/bash
+
+name="Shawm"
+
+
+function loc (){
+
+local name=$1		 #local variable
+echo $name
+
+}
+
+echo $name" - Before function"
+
+loc Raj
+
+echo $name" - After function"
+
+
+
+
+
+Note:
+
+Go through the 25th video to gain more knowledge.(ternary(short hand if-else) like operator and so on)
+
+
+
+
+Readonly keyword:
+
+Readonly is used to variables & functions to make them constants.
+Readonly will reject from overriding 
+
+    Syntax:
+	readonly -p --> variable (Note: -p flag is optional)
+	readonly -f --> function
+
+
+Eg:
+
+#! /bin/bash
+  
+#variable
+n=10
+
+readonly n
+
+n=11
+
+
+
+#function
+
+temp(){
+echo hi
+}
+
+readonly -f temp
+
+temp(){
+echo done
+
+
+
+Note:
+
+If you wanna see all readonly variables --> use readonly command 
+If you wanna see all readonly functions --> use readonly -f command 
+
+
+
+Bash – Override Command
+
+In this example, we shall try overriding ls command for ls -ltr.
+ 
+
+#!/bin/bash
+ 
+# override 'ls' command for 'ls -ltr'
+ls () {
+    command ls -ltr
+}
+ 
+ls
+ 
+
+
+
+
+
+
+
+
+
+
+
+	
