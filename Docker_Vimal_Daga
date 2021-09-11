@@ -1,0 +1,16 @@
+Docker - Where ever we require an OS, docker comes into picture. Everybody has a different perspective of the Docker, the very common thing everybody talk about is we have to take back something like our software/application as a whole to somewhere else then Docker comes into picture.
+But there are multiple use cases of the Docker that can be used in multiple different industries from security everywhere predict system you can use to 
+
+
+To run a program we need OS and for getting the operating system at least 30 minutes we have to wait sitting idle.
+
+And what if we have a use case where we need to 
+install OS – run a program – destroy OS 
+again install OS – run a program – destroy OS and so on
+
+Eg: In case of testing/building/developing, sometimes we need to install OS – run a program – destroy OS.
+So every time we install OS we need to waste minimum of 30 min.
+
+
+
+
